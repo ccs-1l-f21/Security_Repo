@@ -1,4 +1,4 @@
-# Security Repo
+~~# Security Repo
 
 ## Introduction
 
@@ -51,8 +51,86 @@ I will include longform notes below and well as a summary:
 
 ### Notes:
 
+<hr>
 
+[1st Video](https://www.youtube.com/watch?v=ZWxYWdiXqD8):
 
+### ___Privilege Escalation___
+
+The most common way to privilege escalate is sudo, this is of course not a working solution for hacking but is the most common within development
+
+Each process has 3 types of UIDs:
+1) Effective (eUID) -> The UID that is sued for most access checks
+2) Real (rUID) -> used for signal checks
+3) Saved -> used for temporary privileges
+
+eUID 0 is the root user. It can 
+- Open any file
+- Execute any program
+- Assume any and all UIDs and GID
+- Debug any program
+
+Root if exploited can be disastrous
+
+`ls /proc` will show all the processes running on the computer. Root can get the memory of all of them.
+
+Privilege Escalation Exploit an exploit in which an attacker raises their permissions to root level.
+
+The typical flow is as follows:
+1) Gain a foothold on the system through some vulnerable service
+2) Find a vulnerable privileged service
+3) Exploit the service to gain its privilege
+
+There are a surprising number of vulnerabilities in SUID binaries and through applications unnecessary use of SUDOing
+
+There are kernel level vulnerabilities as well that can be exploited
+
+<hr>
+
+[2nd Video](https://www.youtube.com/watch?v=kzbyvr_PJ9k)
+
+### ___Program Misuse - Mitigations___
+
+Security Issues are a fact of programming, so programmers need to find a way to reduce the damage that can be caused by exploits.
+
+Common Theme: mitigations reduce but do not eliminate the potential for harm.
+
+Most command injection vulnerabilities occur through `/bin/sh`
+
+The mitigation, if `/bin/sh` runs as root, then it will reduce the privileges of the program to the rUID
+that can be disabled with `/bin/sh -p`
+
+Wireshark: Network sniffer that causes security problems. It requires a lot of privileges to look at network traffic
+
+Mitigation -> Separate the process into programs:
+1) Records Traffic (wireshark): This one is the one that requires the privileges
+2) Dumps Traffic (dumpcap)
+
+<hr>
+
+[3rd Video](https://www.youtube.com/watch?v=9jc0eSnrzF4)
+
+### ___Computer Architecture___
+
+All programs will eventually be reduced down to binary encoded instructions that run on the CPU
+
+The CPU is made up of logic gates (among other things)
+
+Some Logic gates are shown below:
+![img.png](img.png)
+
+Computer Architecture can be reduced down to the following:
+![img_1.png](img_1.png)
+
+<hr>
+
+[4th Video](https://www.youtube.com/watch?v=ImdnOGNZflU)
+
+### ___Assembly___
+
+The CPU only accepts assembly as a programming language
+
+CPU has registers which are expensive because they're directly integrated into the CPU
 
 
 
