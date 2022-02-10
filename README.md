@@ -43,7 +43,7 @@ Systems Security can include but is certainly not limited to:
 
 Cryptography refers to the mathematical techniques that used to encrypt data.
 
-## Log: Thursday, January 24th
+## Notes Session 1:
 
 Goal: Go through lectures for unit 2 and 3 of PWN.College
 
@@ -117,10 +117,10 @@ All programs will eventually be reduced down to binary encoded instructions that
 The CPU is made up of logic gates (among other things)
 
 Some Logic gates are shown below:
-![img.png](img.png)
+![img.png](pictures/img.png)
 
 Computer Architecture can be reduced down to the following:
-![img_1.png](img_1.png)
+![img_1.png](pictures/img_1.png)
 
 <hr>
 
@@ -132,6 +132,43 @@ The CPU only accepts assembly as a programming language
 
 CPU has registers which are expensive because they're directly integrated into the CPU
 
+## Notes Session 2:
 
+Von Neumann architecture treats code as data
+Harvard Architecture stores data and code separately
 
+![img_2.png](pictures/img_2.png)
 
+Notice how the input parameter name is being treated as a function. This means that if the string looks like C code, it can execute.
+
+Modern computers usually have mitigations against this but vulnerabilities can be easily found.
+
+####Morris Internet Worm
+
+First shellcode injection to get foothold on machine
+
+This worm disconnected the whole intern
+
+[The Morris Worm Code](https://blog.rapid7.com/2019/01/02/the-ghost-of-exploits-past-a-deep-dive-into-the-morris-worm/)
+
+Why is it shell code? -> Goal is to run a shell command
+
+You write the shellcode as assembly code and then compile it into an ELF file. Finally, pull out the raw bytes with an object copy command
+
+You can trace shellcode from a high level with `strace` which traces all system calls
+
+At a lower level, you can use gdb to debug shellcode
+
+Shellcode for other architectures:
+
+![img_3.png](pictures/img_3.png)
+
+## Project 1: writing a shellcode injection
+
+### Goal:
+To write a purposefully vulnerable program and show a demo (with steps) for how to exploit that vulnerability
+
+### Steps to Creation:
+
+1) Write a program in C that has a vulnerability (The code for it will be available in /demos/shellcode_injection). For this program I wrote a very simple vulnerability, it's important to recognize that while this seems like it would never happen in the real world, version of this can occur very often.
+2) Write code to start a /bin/sh instance
