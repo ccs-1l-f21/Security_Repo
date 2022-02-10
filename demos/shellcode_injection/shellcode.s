@@ -7,4 +7,4 @@ _start:
     mov rdx, 0		# this makes the third argument, envp, NULL
     syscall			# this triggers the system call
 binsh:				# a label marking where the /bin/sh string is
-    .string "/bin/sh"
+    .string "/bin/bash"
