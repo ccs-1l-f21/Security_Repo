@@ -171,4 +171,116 @@ To write a purposefully vulnerable program and show a demo (with steps) for how 
 ### Steps to Creation:
 
 1) Write a program in C that has a vulnerability (The code for it will be available in /demos/shellcode_injection). For this program I wrote a very simple vulnerability, it's important to recognize that while this seems like it would never happen in the real world, version of this can occur very often.
-2) Write code to start a /bin/sh instance
+2) Write assembly code to start a /bin/sh instance
+3) compile the assembly code into the raw bytes
+4) cat the bytes as the input into the vulnerable file
+
+The code for this project with the compiled raw bytecode is in /demos/shellcode_injection
+
+<hr>
+
+[5th Video](https://www.youtube.com/watch?v=GH4NBLtPmyo)
+
+Since The John Von Neumann architecture doesn't see a difference between code and data, it can cause exploits to be discovered
+
+Now computer architecture designers see data and code as two different things.
+
+Modern computers also consider memory permissions (called DEP (data execution protection) on Windows. On linux: n-ex).
+
+Shell-coding has thus become nearly extinct. Its still present in embedded devices
+
+IDEA #1:
+
+de-protect the memory with mprotect() system call
+
+## New Unit - Sandboxing
+
+[Introduction](https://www.youtube.com/watch?v=Ide_eg-eQZ0)
+
+Back in the 1950s the code ran extremely close to the hardware
+Code could do anything on the machine
+
+In the 60s, the split between the OS and userspace arose (processes could still clobber each other)
+
+In the 80s, the rise of virtual memory allowed processes to run in different parts of memory
+
+In the 90s, scripting languages created a separation between the interpreter and interpreted code
+
+Web Browsers in the 2000s brought vulnerabilities because browsers did so much. Plugins that would run in the browser could run with the full permissions of the user using it.
+
+It was a wild west of security
+
+"Drive by Download" targeted these plugins
+
+The rise of Sandboxing:
+1) Spawn "privileged parent process"
+2) Spawn "sandboxed child process"
+3) When a child needs to perform a privileged action, it asks the parent
+
+Sandboxing is so effective that a second vulnerability is required to bypass it and exploit the first vulnerability
+
+
+[Sandboxing: chroot](https://www.youtube.com/watch?v=C81lO7pG5aA)
+
+chroot first appeared in 1979
+
+It changed the meaning of slash to another directory
+
+chroot will make it so the process cannot exceed the bounds of that root
+
+chroot used to be the defacto method of sandboxing
+
+It requires certain privileges (usually ones of root user)
+
+chroot stands for "change root"
+
+running a command like `sudo chroot /tmp/jail /bin/bash` would say that /bin/bash doesn't exist becuase it doesnt exist in /tmp/jail
+
+chroot has exactly 2 effects:
+- changes the meaning of "/" to the location of the first parameter
+- change /temp/jail/.. to go to /temp/jail
+
+must make sure to change directory to "/" or else you will end up in the home directory
+
+chroot wont change the current working directory, that makes it dangerous
+
+Chroot is not safe, it doesnt affect the communication with other processes and has become obsolete
+
+[Seccomp](https://www.youtube.com/watch?v=hrT1xvxGKS4)
+
+Seccomp is a way to heavily restrict system calls through kernel-level sandboxing
+
+A user can set the rules of Seccomp
+
+![img.png](img.png)
+^ Simple code to build in a sandbox to your code
+
+Going through the code line by line:
+1) it creates a seccomp context object
+2) it initializes it with a default policy
+3) it sets a rule foe the seccomp object to kill the program it if the program tries to call execve
+4) it loads it all into the object and sets the policy
+
+How does Seccomp work?
+
+Seccomp uses the kernel functionality eBPF
+
+eBPF are programs that run in an in-kernel, "safe" environment (usually a virtual type machine)
+
+[Escaping Seccomp](https://www.youtube.com/watch?v=h1L9mF6PHlQ)
+
+####Breaking out
+
+To do anything useful, a sandboxed process needs to interact with privileged processes
+
+some vectors of attack:
+- permissive policies
+- syscall confusion
+- kernel vulnerabilities
+
+
+Permissive Policies:
+Combination of:
+1) system calls are complex, and there are a lot of them
+2) Developers might avoid breaking functionality by erring on the side of permissiveness
+
