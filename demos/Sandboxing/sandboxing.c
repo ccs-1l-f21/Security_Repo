@@ -1,9 +1,8 @@
 
 #define _GNU_SOURCE 1 
-#include <sys/sendfile.h> 
-#include <sys/types.h> 
-#include <sys/stat.h> 
-#include <sys/mman.h> 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/uio.h>
 #include <seccomp.h> 
 #include <string.h> 
 #include <stdlib.h> 

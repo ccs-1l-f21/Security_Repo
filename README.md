@@ -284,3 +284,173 @@ Combination of:
 1) system calls are complex, and there are a lot of them
 2) Developers might avoid breaking functionality by erring on the side of permissiveness
 
+## New Unit: Reverse Engineering
+
+[Introduction](https://www.youtube.com/watch?v=ClVocVk1c5g)
+
+Forward Engineering Process:
+simply:
+1) figure out what you wanna code
+2) code it
+3) compile it
+4) run it
+
+More in depth:
+1) design
+2) code
+3) compile
+4) debug
+5) compile
+6) debugging
+7) repeat
+8) assemble
+
+There is a disconnect between design and code
+
+the compiler further abstracts the code from the original design including:
+- comments
+- variable names
+- function names
+- structure data
+- even sometimes entire algorithms
+
+Even further, usually programs are stripped of all relevant metadata
+
+The reverse engineering process:
+
+1) disassemble
+2) decompile
+3) Lots of thinking
+4) understand
+
+The reverse engineering process is largely human oriented
+
+###[Functions and Frames](https://www.youtube.com/watch?v=3IdeyjrMBA4)
+
+A program is...
+- consists of modules
+- each is make up of functions
+- that contain blocks
+- of instructions
+- that operate on variables and data structures
+
+Modules are collections of functions shipped in libraries
+
+Functions represent well encapsulated functionality
+
+initially, function can be reversed engineered in isolation but are able to be combined later to get a more complete description
+
+You can represent function in a graph where each chunk of code is a block and there are edges between graphs which represent conditional and unconditional jumps
+
+functions in assembly usually have a prologue and an epilogue which edit the stack frame
+
+The stack is usually used to store local variables (note that the stack grows backwards i.e. subtract from the stack pointer to increase the size of the stack)
+
+The stack usually holds the initial values of the program like environment variables and arguments to the bash executable call
+
+notice that the variables that the arguments are hold are not where the arguments are. The arguments are merely pointers to those variables.
+![img_1.png](img_1.png)
+
+when you call a function on the stack, the return address is popped onto the stack
+
+###[Data Access](https://www.youtube.com/watch?v=AtVprTb5xBs)
+
+programs operate on data which is stored in various places (.data .rodata .bss stack heap)
+
+###[Static Tools](https://www.youtube.com/watch?v=ls4Eoew6aSY)
+
+static reverse engineering: analyzing a program at rest.
+
+
+###Some Simple Tools:
+
+kaitai struct: file format parser and explorer
+
+nm: lists symbols used in elf files
+
+strings: dumps ASCII strings found in file
+
+obj dump: simple disassembler
+
+checksec: analyzes security features used by an executable
+
+###Advanced Disassemblers:
+
+Commercial:
+
+- IDA Pro: the "gold standard" of disassemblers
+- Binary Ninja: IDA's main commercial competitor
+
+Free:
+- Binary Ninja Cloud
+
+Open source:
+- angr management: an academic binary analysis framework!
+- ghidra: a reversing tool created by the NSA
+- cutter: a reversing tool created by the radare2 open source project
+
+
+![img_2.png](img_2.png)
+
+This is what it would look like when you disassemble the function into a graph
+
+some tools can actually transform the assembly into some type of source code
+
+###[Dynamic Tools](https://www.youtube.com/watch?v=HcBordv7aWU)
+
+- ltrace (traces library calls)
+- strace (traces system calls)
+
+Running the program with multiple different inputs might get you farther.
+- ltrace the program with input A
+- ltrace the program again with input B
+- try to reverse the algorithm
+
+try to look at the executable with gdb (lldb on mac)
+
+look at gdb scripting: automate the reverse engineering
+
+### Errata: Dealing with PIE:
+
+Position Dependant Executables are loaded at a static address in memory
+
+Position Independent Executables are not
+
+### Timeless Debugging:
+
+Timeless debugging frees you from having to think of breakpoints ahead of time:
+
+1) record execution
+2) rewind execution
+3) replay execution
+
+relevant tools:
+- gdb
+- rr
+- qira
+
+###[Real World Execution](https://www.youtube.com/watch?v=2pqvHSy11JE)
+
+###License Checkers:
+
+Before software had internet access, it had to check it wasn't being pirated
+
+License key check:
+- Developer would create some algorithm that takes in an input, perform some calculation and then validate the results
+
+the method trusts the binary to keep the secrets in the algorithm
+
+there was a Rise of Keygens
+
+Evolution of the DRM:
+
+anti-debugging fight dynamic analysis
+Wrapping the DRM in an emulator to make it harder to read what is happening
+Trusted Execution Environments move the DRM outside of the CPU into protected hardware
+
+Reverse Engineering for Modding:
+
+Examples: 
+- the Skyrim Script Engine
+- Dwarf Fortress: DFHack
+- cheats for games
